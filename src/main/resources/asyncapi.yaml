@@ -1,0 +1,44 @@
+asyncapi: 3.0.0
+info:
+  title: User Service API
+  version: 1.0.0
+servers:
+  localKafkaServer:
+    host: localhost:9092
+    protocol: kafka
+channels:
+  userRegistrationNotification:
+    description: This channel contains a message per each user who signs up in our application.
+    address: user-registration-notification
+    messages:
+      message:
+        $ref: '#/components/messages/userRegistrationNotification'
+operations:
+  onUserRegistrationNotification:
+    action: send
+    channel:
+      $ref: '#/channels/userRegistrationNotification'
+components:
+  schemas:
+    email:
+      type: string
+      format: email
+      description: This property describes the email of the user
+      examples:
+        - john_doe@mail.com
+    firstName:
+      type: string
+      description: This property describes the first name of the user
+      examples:
+        - John
+    userRegistrationNotificationDto:
+      type: object
+      properties:
+        firstName:
+          $ref: '#/components/schemas/firstName'
+        email:
+          $ref: '#/components/schemas/email'
+  messages:
+    userRegistrationNotification:
+      payload:
+        $ref: '#/components/schemas/userRegistrationNotificationDto'
