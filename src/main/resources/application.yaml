@@ -24,13 +24,5 @@ spring:
           json:
             type:
               mapping: "userRegistrationNotificationDto:org.vitalii.fedyk.libraryuserservice.dto.UserRegistrationNotificationDto"
-
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-  instance:
-    prefer-ip-address: true
-server:
-  port: ${PORT}
+paths:
+  books: ${BOOKS_PATH}

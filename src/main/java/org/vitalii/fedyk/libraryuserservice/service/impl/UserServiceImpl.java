@@ -6,8 +6,11 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.vitalii.fedyk.libraryuserservice.client.BookClient;
 import org.vitalii.fedyk.libraryuserservice.dto.*;
+import org.vitalii.fedyk.libraryuserservice.dto.CreateUserDto;
+import org.vitalii.fedyk.libraryuserservice.dto.PaginationDto;
+import org.vitalii.fedyk.libraryuserservice.dto.ReadUserDto;
+import org.vitalii.fedyk.libraryuserservice.dto.ReadUsersDto;
 import org.vitalii.fedyk.libraryuserservice.exception.EmailAlreadyUsedException;
 import org.vitalii.fedyk.libraryuserservice.exception.NotFoundException;
 import org.vitalii.fedyk.libraryuserservice.exception.OperationNotPermittedException;
@@ -16,6 +19,7 @@ import org.vitalii.fedyk.libraryuserservice.model.User;
 import org.vitalii.fedyk.libraryuserservice.producer.UserRegistrationNotificationProducer;
 import org.vitalii.fedyk.libraryuserservice.repository.UserRepository;
 import org.vitalii.fedyk.libraryuserservice.service.UserService;
+import org.vitalii.fedyk.libraryuserservice.client.BorrowedBookApi;
 
 import static org.vitalii.fedyk.libraryuserservice.constant.ExceptionConstants.*;
 
@@ -25,7 +29,7 @@ import static org.vitalii.fedyk.libraryuserservice.constant.ExceptionConstants.*
 public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     private UserRepository userRepository;
-    private BookClient bookClient;
+    private BorrowedBookApi borrowedBookClient;
     private UserRegistrationNotificationProducer userRegistrationNotificationProducer;
 
     @Override
@@ -60,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(final Long id) {
-        if (bookClient.isBorrowedByUser(id)) {
+        if (borrowedBookClient.isBorrowedByUser(id)) {
             throw new OperationNotPermittedException(USER_CANNOT_BE_DELETED);
         }
         final User user = userRepository.findById(id)

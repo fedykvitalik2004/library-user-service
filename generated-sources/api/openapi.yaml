@@ -1,0 +1,761 @@
+openapi: 3.0.3
+info:
+  title: Library service
+  version: "1.0"
+servers:
+- url: /
+paths:
+  /authors:
+    get:
+      operationId: getAllAuthors
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadAuthors'
+          description: All authors retrieved successfully
+      summary: Get all authors
+      tags:
+      - Author
+      x-spring-paginated: true
+      x-accepts:
+      - application/json
+    post:
+      operationId: createAuthor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAuthor'
+        description: Data for the author to be created
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadAuthor'
+          description: Author successfully created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Invalid input data
+      summary: Create a new author
+      tags:
+      - Author
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /authors/{authorId}:
+    delete:
+      operationId: deleteAuthor
+      parameters:
+      - description: Identifier of the author
+        explode: false
+        in: path
+        name: authorId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "204":
+          description: Author successfully deleted
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Author not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Author cannot be deleted because it is referenced elsewhere
+      summary: Delete an author by ID
+      tags:
+      - Author
+      x-accepts:
+      - application/json
+    get:
+      operationId: getAuthorById
+      parameters:
+      - description: Identifier of the author
+        explode: false
+        in: path
+        name: authorId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadAuthor'
+          description: Author successfully retrieved
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Author not found
+      summary: Find an author by ID
+      tags:
+      - Author
+      x-accepts:
+      - application/json
+    put:
+      operationId: updateAuthor
+      parameters:
+      - description: Identifier of the author
+        explode: false
+        in: path
+        name: authorId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAuthor'
+        description: Data to update the author
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadAuthor'
+          description: Author successfully updated
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Invalid input data
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Author not found
+      summary: Update an author
+      tags:
+      - Author
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /books:
+    post:
+      operationId: createBook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBook'
+        description: Data to create a new book
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadBook'
+          description: Book successfully created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Invalid input data
+      summary: Create a new book
+      tags:
+      - Book
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /books/search:
+    get:
+      description: |
+        This endpoint allows users to search for books based on various search criteria for such fields ('title' and 'pagesCount'). Such operators are permitted: `:`, `!=`, `<`, `>`, `<:`, `>:`, `contains`. If there are several criteria, use ',' between them
+      operationId: search
+      parameters:
+      - example: "pagesCount>:3,pagesCount<:5,title:Book"
+        explode: true
+        in: query
+        name: query
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadBooks'
+          description: Books are retrieved accordingly
+      summary: Find books by criteria
+      tags:
+      - Book
+      x-spring-paginated: true
+      x-accepts:
+      - application/json
+  /books/{bookId}:
+    delete:
+      operationId: deleteBook
+      parameters:
+      - description: Identifier of the book
+        example: "1"
+        explode: false
+        in: path
+        name: bookId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "204":
+          description: Book successfully deleted
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Book not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Book cannot be deleted because it is referenced elsewhere
+      summary: Delete a book by ID
+      tags:
+      - Book
+      x-accepts:
+      - application/json
+    get:
+      operationId: getBookById
+      parameters:
+      - description: Identifier of the book
+        example: "1"
+        explode: false
+        in: path
+        name: bookId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadBook'
+          description: Book successfully retrieved
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Author not found
+      summary: Find a book by ID
+      tags:
+      - Book
+      x-accepts:
+      - application/json
+    put:
+      operationId: updateBook
+      parameters:
+      - description: Identifier of the book
+        example: "1"
+        explode: false
+        in: path
+        name: bookId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBook'
+        description: Data to update a book
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadBook'
+          description: Book successfully updated
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Invalid input data
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Book not found
+      summary: Update a book by ID
+      tags:
+      - Book
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /borrowed-books:
+    post:
+      operationId: addBorrowedBook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBorrowedBook'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadBorrowedBook'
+          description: Borrowed book successfully created
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Book or user doesn't exist
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: Borrowed book exists by its combination of IDs
+      summary: Add a borrowed book
+      tags:
+      - BorrowedBook
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /borrowed-books/{bookId}/{userId}:
+    delete:
+      operationId: deleteBorrowedBook
+      parameters:
+      - description: The ID of the book to delete.
+        explode: false
+        in: path
+        name: bookId
+        required: true
+        schema:
+          example: 123
+          format: int64
+          type: integer
+        style: simple
+      - description: The ID of the user who borrowed the book.
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          example: 456
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "204":
+          description: Successfully deleted the borrowed book record.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionMessage'
+          description: The specified borrowed book record was not found.
+      summary: Delete a borrowed book
+      tags:
+      - BorrowedBook
+      x-accepts:
+      - application/json
+  /borrowed-books/borrowed-by-user/{userId}:
+    get:
+      operationId: isBorrowedByUser
+      parameters:
+      - description: The ID of the user.
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          example: 1
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: "Returns true if the book is borrowed by the user, false otherwise."
+      summary: Check if a book is borrowed by a user
+      tags:
+      - BorrowedBook
+      x-accepts:
+      - application/json
+  /users/{userId}/borrowed-books:
+    get:
+      operationId: findBorrowedBooks
+      parameters:
+      - description: Identifier of the user
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadBorrowedBooks'
+          description: Got borrowed books
+      summary: Find borrowed books by user's id
+      tags:
+      - User
+      x-accepts:
+      - application/json
+components:
+  schemas:
+    AuthorId:
+      example: 1
+      format: int64
+      minimum: 1
+      type: integer
+    BookId:
+      example: 1
+      format: int64
+      minimum: 1
+      type: integer
+    UserId:
+      example: 1
+      format: int64
+      minimum: 1
+      type: integer
+    BookGenre:
+      description: Genre of the book
+      enum:
+      - FICTION
+      - NON_FICTION
+      - SCIENCE_FICTION
+      - FANTASY
+      - MYSTERY
+      - BIOGRAPHY
+      - HISTORICAL
+      - ROMANCE
+      - THRILLER
+      - HORROR
+      - SELF_HELP
+      - HEALTH
+      - COOKBOOK
+      - CHILDREN
+      example: FICTION
+      type: string
+    FullName:
+      example:
+        firstName: Mykyta
+        lastName: Shevchenko
+      properties:
+        firstName:
+          example: Mykyta
+          type: string
+        lastName:
+          example: Shevchenko
+          type: string
+      required:
+      - firstName
+      - lastName
+      type: object
+    ReadUser:
+      properties:
+        id:
+          example: 1
+          format: int64
+          minimum: 1
+          type: integer
+        fullName:
+          $ref: '#/components/schemas/FullName'
+        email:
+          example: mail@gmail.com
+          type: string
+        birthday:
+          format: date
+          type: string
+      type: object
+    ReadUsers:
+      properties:
+        users:
+          items:
+            $ref: '#/components/schemas/ReadUser'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      type: object
+    CreateUser:
+      properties:
+        fullName:
+          $ref: '#/components/schemas/FullName'
+        email:
+          example: mykyta_shechenko@gmail.com
+          maxLength: 20
+          minLength: 8
+          type: string
+        password:
+          example: password123!
+          type: string
+        birthday:
+          format: date
+          type: string
+      required:
+      - birthday
+      - email
+      - fullName
+      - password
+      type: object
+    CreateAuthor:
+      properties:
+        fullName:
+          $ref: '#/components/schemas/FullName'
+        description:
+          maxLength: 300
+          type: string
+      required:
+      - fullName
+      type: object
+    ReadAuthor:
+      example:
+        fullName:
+          firstName: Mykyta
+          lastName: Shevchenko
+        description: description
+        id: 1
+      properties:
+        id:
+          example: 1
+          format: int64
+          minimum: 1
+          type: integer
+        fullName:
+          $ref: '#/components/schemas/FullName'
+        description:
+          type: string
+      type: object
+    ReadAuthors:
+      example:
+        pagination:
+          pageNumber: 1
+          pageSize: 10
+          totalNumberOfPages: 1
+        authors:
+        - fullName:
+            firstName: Mykyta
+            lastName: Shevchenko
+          description: description
+          id: 1
+        - fullName:
+            firstName: Mykyta
+            lastName: Shevchenko
+          description: description
+          id: 1
+      properties:
+        authors:
+          items:
+            $ref: '#/components/schemas/ReadAuthor'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      type: object
+    CreateBook:
+      properties:
+        title:
+          description: The title of the book.
+          example: The Great Gatsby
+          type: string
+        description:
+          description: A brief description of the book.
+          example: Description
+          maxLength: 500
+          type: string
+        genre:
+          $ref: '#/components/schemas/BookGenre'
+        pagesCount:
+          description: Number of pages in the book.
+          example: 180
+          type: integer
+        authorId:
+          example: 1
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+      - authorId
+      - genre
+      - pagesCount
+      - title
+      type: object
+    ReadBook:
+      example:
+        pagesCount: 180
+        authorFullName:
+          firstName: Mykyta
+          lastName: Shevchenko
+        genre: FICTION
+        description: Description
+        id: 1
+        title: The Great Gatsby
+        authorId: 1
+      properties:
+        id:
+          example: 1
+          format: int64
+          minimum: 1
+          type: integer
+        title:
+          description: The title of the book.
+          example: The Great Gatsby
+          type: string
+        description:
+          description: A brief description of the book.
+          example: Description
+          maxLength: 500
+          type: string
+        genre:
+          $ref: '#/components/schemas/BookGenre'
+        pagesCount:
+          description: Number of pages in the book.
+          example: 180
+          type: integer
+        authorId:
+          example: 1
+          format: int64
+          minimum: 1
+          type: integer
+        authorFullName:
+          $ref: '#/components/schemas/FullName'
+      type: object
+    ReadBooks:
+      items:
+        $ref: '#/components/schemas/ReadBook'
+      type: array
+    CreateBorrowedBook:
+      properties:
+        bookId:
+          example: 1
+          format: int64
+          minimum: 1
+          type: integer
+        userId:
+          example: 1
+          format: int64
+          minimum: 1
+          type: integer
+        returnDate:
+          description: The date when the book should be returned. Must be in the future.
+          example: 2025-12-31T23:59:59Z
+          format: date-time
+          type: string
+      required:
+      - bookId
+      - returnDate
+      - userId
+      type: object
+    ReadBorrowedBook:
+      example:
+        returnDate: 2024-12-01T10:00:00Z
+        book:
+          pagesCount: 180
+          authorFullName:
+            firstName: Mykyta
+            lastName: Shevchenko
+          genre: FICTION
+          description: Description
+          id: 1
+          title: The Great Gatsby
+          authorId: 1
+        userId: 1
+        borrowDate: 2024-11-01T10:00:00Z
+      properties:
+        book:
+          $ref: '#/components/schemas/ReadBook'
+        userId:
+          example: 1
+          format: int64
+          minimum: 1
+          type: integer
+        borrowDate:
+          description: The date when the book was borrowed.
+          example: 2024-11-01T10:00:00Z
+          format: date-time
+          type: string
+        returnDate:
+          description: The expected return date of the borrowed book.
+          example: 2024-12-01T10:00:00Z
+          format: date-time
+          type: string
+      type: object
+    ReadBorrowedBooks:
+      items:
+        $ref: '#/components/schemas/ReadBorrowedBook'
+      type: array
+    Pagination:
+      example:
+        pageNumber: 1
+        pageSize: 10
+        totalNumberOfPages: 1
+      properties:
+        pageNumber:
+          example: 1
+          minimum: 0
+          type: integer
+        pageSize:
+          example: 10
+          maximum: 100
+          minimum: 1
+          type: integer
+        totalNumberOfPages:
+          example: 1
+          minimum: 0
+          type: integer
+      type: object
+    ExceptionMessage:
+      example:
+        additionalInfo:
+          key: "{}"
+        message: An error occurred
+      properties:
+        message:
+          example: An error occurred
+          type: string
+        additionalInfo:
+          additionalProperties:
+            type: object
+          description: Additional information related to the exception
+          type: object
+      type: object
+

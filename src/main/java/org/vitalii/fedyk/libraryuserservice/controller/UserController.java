@@ -2,15 +2,13 @@ package org.vitalii.fedyk.libraryuserservice.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.vitalii.fedyk.libraryuserservice.client.BookClient;
 import org.vitalii.fedyk.libraryuserservice.dto.CreateUserDto;
 import org.vitalii.fedyk.libraryuserservice.dto.ReadUserDto;
 import org.vitalii.fedyk.libraryuserservice.dto.ReadUsersDto;
 import org.vitalii.fedyk.libraryuserservice.service.UserService;
+import org.vitalii.fedyk.libraryuserservice.controller.UsersApi;
 
-import java.util.List;
 
 @RestController
 @AllArgsConstructor

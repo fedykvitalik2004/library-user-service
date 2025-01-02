@@ -25,6 +25,8 @@ public interface UserMapper {
 
     @Named("toFullNameDto")
     default FullNameDto toFullName(final FullName fullName) {
-        return new FullNameDto(fullName.getFirstName(), fullName.getLastName());
+        return new FullNameDto()
+                .firstName(fullName.getFirstName())
+                .lastName(fullName.getLastName());
     }
 }
