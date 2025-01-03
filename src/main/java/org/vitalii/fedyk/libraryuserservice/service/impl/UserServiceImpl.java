@@ -16,7 +16,7 @@ import org.vitalii.fedyk.libraryuserservice.exception.NotFoundException;
 import org.vitalii.fedyk.libraryuserservice.exception.OperationNotPermittedException;
 import org.vitalii.fedyk.libraryuserservice.mapper.UserMapper;
 import org.vitalii.fedyk.libraryuserservice.model.User;
-import org.vitalii.fedyk.libraryuserservice.producer.UserRegistrationNotificationProducer;
+import org.vitalii.fedyk.libraryuserservice.producer.DefaultServiceEventsProducer;
 import org.vitalii.fedyk.libraryuserservice.repository.UserRepository;
 import org.vitalii.fedyk.libraryuserservice.service.UserService;
 import org.vitalii.fedyk.libraryuserservice.client.BorrowedBookApi;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     private UserRepository userRepository;
     private BorrowedBookApi borrowedBookClient;
-    private UserRegistrationNotificationProducer userRegistrationNotificationProducer;
+    private DefaultServiceEventsProducer producer;
 
     @Override
     public ReadUserDto createUser(final CreateUserDto createUserDto) {
@@ -38,9 +38,9 @@ public class UserServiceImpl implements UserService {
             throw new EmailAlreadyUsedException(EMAIL_ALREADY_USED.formatted(createUserDto.getEmail()));
         }
         final User user = userMapper.toUser(createUserDto);
-        userRegistrationNotificationProducer.send(new UserRegistrationNotificationDto(
-                user.getFullName().getFirstName(),
-                user.getEmail()));
+        producer.onUserRegistrationNotification(new UserRegistrationNotificationDto()
+                        .withFirstName(user.getFullName().getFirstName())
+                        .withEmail(user.getEmail()));
         return userMapper.toReadUserDto(userRepository.save(user));
     }
 

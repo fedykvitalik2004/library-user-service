@@ -14,15 +14,15 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-  kafka:
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      bootstrap-servers: localhost:9092
-      properties:
-        spring:
-          json:
-            type:
-              mapping: "userRegistrationNotificationDto:org.vitalii.fedyk.libraryuserservice.dto.UserRegistrationNotificationDto"
+  cloud:
+    stream:
+      bindings:
+        on-user-registration-notification-out-0:
+          destination: user-registration-notification
+          content-type: application/json
+      kafka:
+        binder:
+          brokers: localhost:9092
+          auto-create-topics: true
 paths:
   books: ${BOOKS_PATH}

@@ -245,6 +245,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/ExceptionMessage'
   /borrowed-books:
+    get:
+      summary: Find borrowed books by user's id
+      tags:
+        - BorrowedBook
+      operationId: findBorrowedBooks
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: The ID of the user.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Got borrowed books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadBorrowedBooks'
     post:
       summary: "Add a borrowed book"
       operationId: addBorrowedBook
@@ -307,7 +327,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ExceptionMessage'
-  /borrowed-books/borrowed-by-user/{userId}:
+  /borrowed-books/has-borrowed-books:
     get:
       summary: Check if a book is borrowed by a user
       operationId: isBorrowedByUser
@@ -315,7 +335,7 @@ paths:
         - BorrowedBook
       parameters:
         - name: userId
-          in: path
+          in: query
           required: true
           description: The ID of the user.
           schema:
@@ -329,27 +349,6 @@ paths:
             application/json:
               schema:
                 type: boolean
-  /users/{userId}/borrowed-books:
-    get:
-      summary: Find borrowed books by user's id
-      tags:
-        - User
-      operationId: findBorrowedBooks
-      parameters:
-        - name: userId
-          required: true
-          in: path
-          description: Identifier of the user
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Got borrowed books
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReadBorrowedBooks'
 components:
   schemas:
     AuthorId:
@@ -421,28 +420,6 @@ components:
             $ref: '#/components/schemas/ReadUser'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    CreateUser:
-      type: object
-      required:
-        - fullName
-        - email
-        - password
-        - birthday
-      properties:
-        fullName:
-          $ref: "#/components/schemas/FullName"
-        email:
-          type: string
-          example: "mykyta_shechenko@gmail.com"
-          minLength: 8
-          maxLength: 20
-        password:
-          type: string
-          example: "password123!"
-        birthday:
-          type: string
-          format: date
-          example: "29.03.2001"
     CreateAuthor:
       type: object
       required:
